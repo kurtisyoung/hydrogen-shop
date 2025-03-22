@@ -22,7 +22,7 @@ export function PaginatedResourceSection<NodesType>({
 
         return (
           <div>
-            <PreviousLink>
+            <PreviousLink className="flex justify-center items-center bg-black text-white p-2 rounded-md w-50 mb-4 cursor-pointer hover:bg-gray-800">
               {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
             </PreviousLink>
             {resourcesClassName ? (
@@ -30,7 +30,7 @@ export function PaginatedResourceSection<NodesType>({
             ) : (
               resourcesMarkup
             )}
-            <NextLink>
+            <NextLink className="flex justify-center items-center bg-black text-white p-2 rounded-md w-50 cursor-pointer hover:bg-gray-800">
               {isLoading ? 'Loading...' : <span>Load more ↓</span>}
             </NextLink>
           </div>

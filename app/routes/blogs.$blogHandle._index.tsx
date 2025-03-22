@@ -67,7 +67,7 @@ export default function Blog() {
 
   return (
     <div className="blog">
-      <h1>{blog.title}</h1>
+      <h1 className="text-2xl font-bold">{blog.title}</h1>
       <div className="blog-grid">
         <PaginatedResourceSection connection={articles}>
           {({node: article, index}) => (
@@ -96,7 +96,10 @@ function ArticleItem({
     day: 'numeric',
   }).format(new Date(article.publishedAt!));
   return (
-    <div className="blog-article" key={article.id}>
+    <div
+      className="blog-article p-5 bg-gray-100 mb-4 mt-3 rounded-sm"
+      key={article.id}
+    >
       <Link to={`/blogs/${article.blog.handle}/${article.handle}`}>
         {article.image && (
           <div className="blog-article-image">
@@ -109,8 +112,10 @@ function ArticleItem({
             />
           </div>
         )}
-        <h3>{article.title}</h3>
-        <small>{publishedAt}</small>
+        <h3 className="text-xl font-bold">{article.title}</h3>
+        <small>
+          {publishedAt} &middot; {article.author.name}
+        </small>
       </Link>
     </div>
   );

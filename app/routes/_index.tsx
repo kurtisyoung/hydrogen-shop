@@ -80,9 +80,11 @@ function FeaturedCollection({
       {image && (
         <div className="featured-collection-image">
           <Image data={image} sizes="100vw" />
+          <h1 className="text-white text-center text-4xl font-bold absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 uppercase drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] tracking-wider z-10">
+            {collection.title}
+          </h1>
         </div>
       )}
-      <h1>{collection.title}</h1>
     </Link>
   );
 }
@@ -94,7 +96,7 @@ function RecommendedProducts({
 }) {
   return (
     <div className="recommended-products">
-      <h2>Recommended Products</h2>
+      <h2 className="text-2xl font-bold !mb-4">Recommended Products</h2>
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>
           {(response) => (
@@ -111,7 +113,16 @@ function RecommendedProducts({
                         aspectRatio="1/1"
                         sizes="(min-width: 45em) 20vw, 50vw"
                       />
-                      <h4>{product.title}</h4>
+                      <div className="mt-2">
+                        {product.vendor && (
+                          <span className="text-sm text-black-500">
+                            {product.vendor}
+                          </span>
+                        )}
+                        <h4 className="text-base font-medium text-blue-950">
+                          {product.title}
+                        </h4>
+                      </div>
                       <small>
                         <Money data={product.priceRange.minVariantPrice} />
                       </small>
@@ -161,6 +172,7 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
         currencyCode
       }
     }
+    vendor
     images(first: 1) {
       nodes {
         id

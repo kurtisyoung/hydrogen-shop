@@ -11,6 +11,7 @@ import {
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import type {ProductVariantFragment} from 'storefrontapi.generated';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -84,6 +85,14 @@ export default function Product() {
     product.selectedOrFirstAvailableVariant,
     getAdjacentAndFirstAvailableVariants(product),
   );
+  const selectedColour =
+    selectedVariant.selectedOptions.find(
+      (option: {name: string}) => option.name === 'Color',
+    )?.value || 'Black';
+
+  const selectedImages = product.images.nodes.filter((image: {url: string}) =>
+    image.url?.toLowerCase().includes(selectedColour.toLowerCase()),
+  );
 
   // Sets the search param to the selected variant without navigation
   // only when no search params are set in the url
@@ -95,13 +104,32 @@ export default function Product() {
     selectedOrFirstAvailableVariant: selectedVariant,
   });
 
+  console.log(selectedColour, selectedImages);
+
   const {title, descriptionHtml} = product;
 
   return (
     <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <div className="product-main">
-        <h1>{title}</h1>
+      {/* Mobile */}
+      <div className="md:hidden">
+        {selectedImages.length ? (
+          <ProductImage image={selectedImages[0]} />
+        ) : (
+          <ProductImage image={selectedVariant?.image} />
+        )}
+      </div>
+      {/* Desktop */}
+      <div className="hidden md:block">
+        {selectedImages.length ? (
+          selectedImages.map((image: ProductVariantFragment['image']) => (
+            <ProductImage key={image?.id} image={image} />
+          ))
+        ) : (
+          <ProductImage image={selectedVariant?.image} />
+        )}
+      </div>
+      <div className="product-main md:mt-0 mt-4">
+        <h1 className="font-extrabold text-2xl md:text-4xl">{title}</h1>
         <ProductPrice
           price={selectedVariant?.price}
           compareAtPrice={selectedVariant?.compareAtPrice}
@@ -113,10 +141,7 @@ export default function Product() {
         />
         <br />
         <br />
-        <p>
-          <strong>Description</strong>
-        </p>
-        <br />
+        <h4 className="text-lg font-bold">Description</h4>
         <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
         <br />
       </div>
@@ -186,6 +211,15 @@ const PRODUCT_FRAGMENT = `#graphql
     description
     encodedVariantExistence
     encodedVariantAvailability
+    images(first: 100) {
+      nodes {
+        id
+        url
+        altText
+        width
+        height
+      }
+    }
     options {
       name
       optionValues {

@@ -47,7 +47,7 @@ export default function Collections() {
 
   return (
     <div className="collections">
-      <h1>Collections</h1>
+      <h1 className="text-2xl font-bold mb-5">Collections</h1>
       <PaginatedResourceSection
         connection={collections}
         resourcesClassName="collections-grid"
@@ -73,7 +73,7 @@ function CollectionItem({
 }) {
   return (
     <Link
-      className="collection-item"
+      className="collection-item relative"
       key={collection.id}
       to={`/collections/${collection.handle}`}
       prefetch="intent"
@@ -87,7 +87,9 @@ function CollectionItem({
           sizes="(min-width: 45em) 400px, 100vw"
         />
       )}
-      <h5>{collection.title}</h5>
+      <h5 className="text-lg font-bold absolute bottom-0 left-0 p-2 z-10">
+        {collection.title}
+      </h5>
     </Link>
   );
 }

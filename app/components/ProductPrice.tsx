@@ -18,7 +18,7 @@ export function ProductPrice({
           </s>
         </div>
       ) : price ? (
-        <Money data={price} />
+        <Money data={price} className="text-lg font-medium" />
       ) : (
         <span>&nbsp;</span>
       )}

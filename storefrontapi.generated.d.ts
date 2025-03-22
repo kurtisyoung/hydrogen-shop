@@ -1,6 +1,7 @@
 /* eslint-disable eslint-comments/disable-enable-pair */
 /* eslint-disable eslint-comments/no-unlimited-disable */
 /* eslint-disable */
+import {VariantSelector} from '@shopify/hydrogen';
 import type * as StorefrontAPI from '@shopify/hydrogen/storefront-api-types';
 
 export type MoneyFragment = Pick<
@@ -353,6 +354,7 @@ export type RecommendedProductsQuery = {
             'amount' | 'currencyCode'
           >;
         };
+        vendor: string;
         images: {
           nodes: Array<
             Pick<
@@ -485,14 +487,43 @@ export type MoneyProductItemFragment = Pick<
 
 export type ProductItemFragment = Pick<
   StorefrontAPI.Product,
-  'id' | 'handle' | 'title'
+  'id' | 'handle' | 'title' | 'vendor'
 > & {
   featuredImage?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
   >;
+  secondaryImage?: {
+    nodes: Array<
+      Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
+    >;
+  };
   priceRange: {
     minVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
     maxVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+  };
+  selectedOrFirstAvailableVariant?: StorefrontAPI.Maybe<{
+    compareAtPrice?: StorefrontAPI.Maybe<
+      Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+    >;
+  }>;
+  options?: Array<{
+    name: string;
+    optionValues: Array<{
+      name: string;
+      swatch?: StorefrontAPI.Maybe<{
+        color?: StorefrontAPI.Maybe<string>;
+      }>;
+    }>;
+  }>;
+  totalInventory: number;
+  variants?: {
+    nodes: Array<{
+      title: string;
+      image: {
+        altText: string;
+        url: string;
+      };
+    }>;
   };
 };
 

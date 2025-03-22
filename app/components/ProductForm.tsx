@@ -25,7 +25,7 @@ export function ProductForm({
 
         return (
           <div className="product-options" key={option.name}>
-            <h5>{option.name}</h5>
+            <h5 className="text-lg font-bold">{option.name}</h5>
             <div className="product-options-grid">
               {option.optionValues.map((value) => {
                 const {
@@ -53,13 +53,15 @@ export function ProductForm({
                       replace
                       to={`/products/${handle}?${variantUriQuery}`}
                       style={{
-                        border: selected
-                          ? '1px solid black'
-                          : '1px solid transparent',
                         opacity: available ? 1 : 0.3,
                       }}
                     >
-                      <ProductOptionSwatch swatch={swatch} name={name} />
+                      <ProductOptionSwatch
+                        type={option.name}
+                        swatch={swatch}
+                        name={name}
+                        selected={selected}
+                      />
                     </Link>
                   );
                 } else {
@@ -76,9 +78,6 @@ export function ProductForm({
                       }`}
                       key={option.name + name}
                       style={{
-                        border: selected
-                          ? '1px solid black'
-                          : '1px solid transparent',
                         opacity: available ? 1 : 0.3,
                       }}
                       disabled={!exists}
@@ -91,7 +90,12 @@ export function ProductForm({
                         }
                       }}
                     >
-                      <ProductOptionSwatch swatch={swatch} name={name} />
+                      <ProductOptionSwatch
+                        type={option.name}
+                        swatch={swatch}
+                        name={name}
+                        selected={selected}
+                      />
                     </button>
                   );
                 }
@@ -127,19 +131,53 @@ export function ProductForm({
 function ProductOptionSwatch({
   swatch,
   name,
+  selected,
+  type,
 }: {
   swatch?: Maybe<ProductOptionValueSwatch> | undefined;
   name: string;
+  selected: boolean;
+  type: string;
 }) {
   const image = swatch?.image?.previewImage?.url;
   const color = swatch?.color;
 
-  if (!image && !color) return name;
+  if (type.toLowerCase() === 'color')
+    return (
+      <div
+        aria-label={name}
+        className={`product-option-label-swatch h-4 w-4 rounded-full cursor-pointer border border-gray-300 ${
+          selected
+            ? 'outline-solid outline-1 outline-offset-1 outline-blue-950'
+            : ''
+        }`}
+        style={{
+          backgroundColor: color || name.toLowerCase() || 'transparent',
+        }}
+      >
+        {!!image && <img src={image} alt={name} />}
+      </div>
+    );
+
+  if (!image && !color)
+    return (
+      <span
+        className={`border border-black p-2 rounded-md hover:bg-gray-700 hover:text-white transition-colors duration-200 ${
+          selected ? 'bg-black text-white' : ''
+        }`}
+      >
+        {name}
+      </span>
+    );
 
   return (
     <div
       aria-label={name}
-      className="product-option-label-swatch"
+      className={`product-option-label-swatch h-4 w-4 rounded-full cursor-pointer ${
+        selected
+          ? 'outline-solid outline-1 outline-offset-1 outline-blue-950'
+          : ''
+      }`}
       style={{
         backgroundColor: color || 'transparent',
       }}
